@@ -1,0 +1,57 @@
+{
+  "name": "bruno_bozic/version_inspector",
+  "authors": [
+	{
+	  "name": "Bruno Božić",
+	  "email": "bruno.bozic@gmail.com"
+	}
+  ],
+  "autoload": {
+	"psr-4": {
+	  "App\\": "src/App/",
+	  "Utils\\": "src/Utils/",
+	  "Exception\\": "src/Exception/",
+	  "Slim\\Handlers\\": "src/Slim/Handlers/",
+	  "Tests\\": "Tests"
+	}
+  },
+  "require": {
+	"slim/slim": "^3.0",
+	"slim/csrf": "*",
+	"monolog/monolog": "^1.17",
+	"firebase/php-jwt": "*",
+	"akrabat/rka-ip-address-middleware": "*",
+	"doctrine/orm": "*",
+	"respect/validation": "*",
+	"vlucas/phpdotenv": "^2.0",
+	"tuupola/cors-middleware": "^0.5.0",
+	"symfony/console": "^2.7",
+	"ircmaxell/random-lib": "*",
+	"mailgun/mailgun-php": "*",
+	"paragonie/random_compat": "^1.2",
+	"nesbot/carbon": "^1.22",
+	"filp/whoops": "2.1.*",
+	"php-curl-class/php-curl-class": "^7.2",
+	"tuupola/server-timing-middleware": "^0.4.0",
+	"tuupola/slim-jwt-auth": "^2.0",
+	"league/fractal": "^0.13.0",
+	"micheh/psr7-cache": "^0.5.0",
+	"gofabian/negotiation-middleware": "^0.1.2",
+	"tuupola/base62": "^0.8.0",
+	"crell/api-problem": "^2.0",
+	"tuupola/slim-basic-auth": "^2.0"
+  },
+  "require-dev": {
+	"phpunit/phpunit": "*",
+	"squizlabs/php_codesniffer": "^2.5",
+	"overtrue/phplint": "^0.2.0",
+	"phpunit/php-code-coverage": "*"
+  },
+  "scripts": {
+	"test": "composer phplint && composer phpcs && composer phpunit",
+	"phpcs": "vendor/bin/phpcs --standard=PSR2 --extensions=php --encoding=utf-8 --ignore=*/vendor/* . -p",
+	"phpunit": "vendor/bin/phpunit --coverage-text --coverage-html ./report/",
+	"phplint": "env phplint  '**/*.php' '!**/vendor/**'",
+	"watch": "find . -name \"*.php\" -not -path \"./vendor/*\" -o -name \"*.json\" -not -path \"./vendor/*\"| entr -c composer test"
+  }
+}
