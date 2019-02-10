@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entities\Portal;
+use App\Entities\User;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Repository;
 
@@ -11,7 +12,7 @@ class PortalRepository extends RepositoryBase
 	public function get($icao)
 	{
 		$portal = $this->entityManager->getRepository('App\Entities\Portal')->findOneBy(
-			array('portalCode' => $icao, 'active' => 1)
+			array('portalCode' => $icao, 'active' => true)
 		);
 		if ($portal) {
 			return $portal;
@@ -20,7 +21,7 @@ class PortalRepository extends RepositoryBase
 
 	public function getAll()
 	{
-		$query = $this->entityManager->createQuery('SELECT NEW App\Repository\PortalDTO(p.portalCode, p.rootDirectory, p.dateCreated, p.dateModified, p.e_tag) FROM App\Entities\Portal p WHERE p.active = 1');
+		$query = $this->entityManager->createQuery('SELECT NEW App\Repository\PortalDTO(p.portalCode, p.rootDirectory, p.dateCreated, p.dateModified, p.e_tag) FROM App\Entities\Portal p WHERE p.active = true');
 		$portals = $query->getResult();
 
 		return $portals;
@@ -28,7 +29,7 @@ class PortalRepository extends RepositoryBase
 
 	public function getLastUpdated()
 	{
-		$query = $this->entityManager->createQuery('SELECT p FROM App\Entities\Portal p WHERE p.active = 1 ORDER BY p.dateModified DESC');
+		$query = $this->entityManager->createQuery('SELECT p FROM App\Entities\Portal p WHERE p.active = true ORDER BY p.dateModified DESC');
 		$portal = $query->setMaxResults(1)->getResult();
 
 		return $portal;
@@ -36,7 +37,7 @@ class PortalRepository extends RepositoryBase
 
 	public function getAllOrderedByNewest()
 	{
-		$query = $this->entityManager->createQuery('SELECT p FROM App\Entities\Portal p WHERE p.active = 1 ORDER BY p.dateModified DESC');
+		$query = $this->entityManager->createQuery('SELECT p FROM App\Entities\Portal p WHERE p.active = true ORDER BY p.dateModified DESC');
 		$portal = $query->getResult();
 
 		return $portal;
@@ -45,8 +46,9 @@ class PortalRepository extends RepositoryBase
 	public function insert($portal_code, $portal_name, $root_path)
 	{
 		$userName = 'admin';
-		$user = $this->entityManager->getRepository('App\Entities\User')
-			->findOneBy(array('username' => $userName, 'active' => 1));
+        /** @var User $user */
+        $user = $this->entityManager->getRepository('App\Entities\User')
+			->findOneBy(array('username' => $userName, 'active' => true));
 	
 		$portal = new Portal();
 		$portal->setActive(1);
@@ -55,16 +57,19 @@ class PortalRepository extends RepositoryBase
 		$portal->setCreated();
 		$portal->setPortalName($portal_name);
 		$portal->setRootDirectory($root_path);
+
 		$portal->setModifiedBy($user);
 		$portal->setCreatedBy($user);
+
 		$this->entityManager->persist($portal);
+
 		$this->entityManager->flush();
 	}
 
 	public function getByPortalCode($portal_code)
 	{
 		$portal = $this->entityManager->getRepository('App\Entities\Portal')
-			->findOneBy(array('portalCode' => $portal_code, 'active' => 1));
+			->findOneBy(array('portalCode' => $portal_code, 'active' => true));
 
 		return $portal;
 	}
@@ -73,14 +78,16 @@ class PortalRepository extends RepositoryBase
 	{
 		$userName = 'admin';
 		$user = $this->entityManager->getRepository('App\Entities\User')
-			->findOneBy(array('username' => $userName, 'active' => 1));
+			->findOneBy(array('username' => $userName, 'active' => true));
 
 		$portal = $this->entityManager->getRepository('App\Entities\Portal')
-			->findOneBy(array('portalCode' => $portal_code, 'active' => 1));
+			->findOneBy(array('portalCode' => $portal_code, 'active' => true));
 
 		$portal->setModified();
 		$portal->setModifiedBy($user);
+
 		$this->entityManager->remove($portal);
+
 		$this->entityManager->flush();
 	}
 
@@ -88,14 +95,16 @@ class PortalRepository extends RepositoryBase
 	{
 		$userName = 'admin';
 		$user = $this->entityManager->getRepository('App\Entities\User')
-			->findOneBy(array('username' => $userName, 'active' => 1));
+			->findOneBy(array('username' => $userName, 'active' => true));
 
 		$portal = $this->entityManager->getRepository('App\Entities\Portal')
 			->findOneBy(array('portalCode' => $portal_code));
 		$portal->setActive(0);
 		$portal->setModified();
 		$portal->setModifiedBy($user);
+
 		$this->entityManager->persist($portal);
+
 		$this->entityManager->flush();
 	}
 
@@ -103,7 +112,7 @@ class PortalRepository extends RepositoryBase
 	{
 		$userName = 'admin';
 		$user = $this->entityManager->getRepository('App\Entities\User')
-			->findOneBy(array('username' => $userName, 'active' => 1));
+			->findOneBy(array('username' => $userName, 'active' => true));
 
 
 		$portal = $this->entityManager->getRepository('App\Entities\Portal')
@@ -111,7 +120,9 @@ class PortalRepository extends RepositoryBase
 		$portal->setActive(1);
 		$portal->setModified();
 		$portal->setModifiedBy($user);
+
 		$this->entityManager->persist($portal);
+
 		$this->entityManager->flush();
 	}
 
@@ -119,10 +130,10 @@ class PortalRepository extends RepositoryBase
 	{
 		$userName = 'admin';
 		$user = $this->entityManager->getRepository('App\Entities\User')
-			->findOneBy(array('username' => $userName, 'active' => 1));
+			->findOneBy(array('username' => $userName, 'active' => true));
 
 		$portal = $this->entityManager->getRepository('App\Entities\Portal')
-			->findOneBy(array('portalCode' => $portal_code, 'active' => 1));
+			->findOneBy(array('portalCode' => $portal_code, 'active' => true));
 
 		if (isset($portal_name)) {
 			$portal->setPortalName($portal_name);
@@ -134,7 +145,9 @@ class PortalRepository extends RepositoryBase
 
 		$portal->setModified();
 		$portal->setModifiedBy($user);
+
 		$this->entityManager->persist($portal);
+
 		$this->entityManager->flush();
 	}
 }

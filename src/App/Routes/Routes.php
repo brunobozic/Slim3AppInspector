@@ -1,18 +1,19 @@
 <?php
 
-$app->post("/api/v1/token", 'App\Endpoints\TokenEndpoint::getToken');
+$app->post("/api/v1/token", 'App\Endpoints\TokenEndpoint:getToken');
+$app->get("/api/v1/token", 'App\Endpoints\TokenEndpoint:getToken');
 
 
+$app->get('/api/v1/user', 'App\Endpoints\UserEndpoint:getAll');
+$app->get('/api/v1/user/{username}', 'App\Endpoints\UserEndpoint:getOne');
 
-$app->get('/api/v1/user', 'App\Endpoints\UserEndpoint:all');
-$app->get('/api/v1/user/{username}', 'App\Endpoints\UserEndpoint:one');
 
-
-/* This is just for debugging, not usefull in real life. */
+/* This is just for debugging, not useful in real life. */
 $app->get("/api/v1/dump", function ($request, $response, $arguments) {
 	print_r($this->token);
 });
 
+/* This is just for debugging, not useful in real life. */
 $app->get("/api/v1/info", function ($request, $response, $arguments) {
 	phpinfo();
 });

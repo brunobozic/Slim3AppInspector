@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PortalSettingPath
  *
  * @ORM\Entity
- * @ORM\Table(name="portal_setting_path", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"}),
+ * @ORM\Table(name="portal_setting_path", uniqueConstraints={@ORM\UniqueConstraint(name="id_7", columns={"id"}),
  * @ORM\UniqueConstraint(name="portal_setting_file_content_id", columns={"portal_setting_file_content_id"})},
  * schema="app_inspector"
  * )

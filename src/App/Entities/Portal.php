@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Portal
  *
  * @ORM\Entity
- * @ORM\Table(name="portal", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"}),
+ * @ORM\Table(name="portal", uniqueConstraints={@ORM\UniqueConstraint(name="uc_id", columns={"id"}),
  * @ORM\UniqueConstraint(name="portal_code", columns={"portal_code"})},
  * indexes={@ORM\Index(name="idx_id_portal", columns={"id"})},
  * schema="app_inspector"
@@ -153,7 +153,7 @@ class Portal
 		return $this->createdBy;
 	}
 
-	public function setCreatedBy($incCreatedBy)
+	public function setCreatedBy(User $incCreatedBy)
 	{
 		$this->createdBy = $incCreatedBy;
 	}
@@ -163,9 +163,13 @@ class Portal
 		return $this->modifiedBy;
 	}
 
-	public function setModifiedBy(User $incModifiedBy)
+    /**
+     * @param User $incModifiedBy
+     */
+    public function setModifiedBy(User $incModifiedBy)
 	{
-		$this->modifiedBy = $incModifiedBy;
+        /** @var User $incModifiedBy */
+        $this->modifiedBy = $incModifiedBy;
 	}
 
 	public function getDeactivatedBy()

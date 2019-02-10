@@ -11,6 +11,7 @@ $dotenv->load();
 return [
 	'settings' => [
 		'url'                 => 'http://localhost',
+        'timezone' => 'Europe\Zagreb',
 		'hash'                => [
 			'algo' => PASSWORD_BCRYPT,
 			'cost' => 10],
@@ -43,15 +44,18 @@ return [
 		],
 		// Monolog settings
 		'logger'              => [
+            'timezone' => 'Europe\Zagreb',
 			'log_name' => 'app-inspector-log',
 			'log_path' => APP_ROOT . '/src/storage/logs/'],
 		// Monolog settings
 		'tracer'              => [
+            'timezone' => 'Europe\Zagreb',
 			'name'        => 'app-inspector-tracer',
 			'tracer_path' => APP_ROOT . '/src/storage/logs/',
 		],
 		// Monolog settings
 		'audit_log'           => [
+            'timezone' => 'Europe\Zagreb',
 			'name'       => 'app-inspector-auditor',
 			'audit_path' => APP_ROOT . '/src/storage/logs/',
 		],
@@ -75,7 +79,7 @@ return [
 				'cache'                 => null,
 			],
 			'connection'         => [
-				'driver'   => 'pdo_mysql',
+				'driver'   => 'pdo_pgsql',
 				'host'     => getenv('DB_HOST'),
 				'dbname'   => getenv('DB_NAME'),
 				'user'     => getenv('DB_USER'),

@@ -39,7 +39,7 @@ $container[ "ServerTiming" ] = function ($container) {
 $container[ "HttpBasicAuthentication" ] = function ($container) {
 	return new HttpBasicAuthentication([
 		"logger"  => $container[ "logger" ],
-		"path"    => "/token",
+		"path"    => ["/token", "/login", "/index"],
 		"relaxed" => ["127.0.0.1", "localhost", "dev.example.com"],
 		"error"   => function ($request, $response, $arguments) use ($container) {
 			$myLogger = $container->get("logger");

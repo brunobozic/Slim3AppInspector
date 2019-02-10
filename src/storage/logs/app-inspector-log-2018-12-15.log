@@ -1,0 +1,6 @@
+[13:30:39][app-inspector-log][WARNING][NULL][NULL][127.0.0.1][M:Token not found][ID:4aedc658d0df7df8f0736509][C:[]][E:{"class":null,"function":null,"url":"/api/v1/portal?XDEBUG_SESSION_START=16412","http_method":"GET","server":"127.0.0.1","referrer":null,"process_id":3580,"memory_peak_usage":"6 MB","memory_usage":"6 MB"}]
+
+[13:30:39][app-inspector-log][CRITICAL][NULL][NULL][127.0.0.1][M:Token not found][ID:4aedc658d0df7df8f0736509][C:[]][E:{"class":null,"function":null,"url":"/api/v1/portal?XDEBUG_SESSION_START=16412","http_method":"GET","server":"127.0.0.1","referrer":null,"process_id":3580,"memory_peak_usage":"6 MB","memory_usage":"6 MB"}]
+
+[13:30:39][app-inspector-log][INFO][NULL][NULL][127.0.0.1][M:Calling an existing API endpoint][ID:4aedc658d0df7df8f0736509][C:{"ip":null,"uri":"/api/v1/portal","status":401}][E:{"class":null,"function":null,"url":"/api/v1/portal?XDEBUG_SESSION_START=16412","http_method":"GET","server":"127.0.0.1","referrer":null,"process_id":3580,"memory_peak_usage":"6 MB","memory_usage":"6 MB"}]
+

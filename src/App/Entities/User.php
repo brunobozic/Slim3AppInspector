@@ -9,13 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
  * Users
  *
  * @ORM\Entity
- * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"}),
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="id_10", columns={"id"}),
  * @ORM\UniqueConstraint(name="email", columns={"email"}),
  * @ORM\UniqueConstraint(name="username", columns={"username"})},
  * indexes={@ORM\Index(name="id_2", columns={"id"}),
  * @ORM\Index(name="username_2", columns={"username"})},
- * )                                                                                                                   
- *              schema="panasonic")
+ * schema="app_users"
+ * )
  */
 class User
 {
@@ -24,18 +24,36 @@ class User
 	 * @ORM\Version
 	 */
 	protected $version;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $deleted = 0;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="locked_out", type="boolean", nullable=true)
+     */
+    private $lockedOut = 0;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="failed_attempt_count", type="boolean", nullable=true)
+     */
+    private $failedAttemptCount = 0;
 	/**
 	 * @var integer
 	 *
-	 * @ORM\Column(name="id", type="integer", nullable=false)
+	 * @ORM\Column(name="id_user", type="integer", nullable=false)
 	 * @ORM\Id
 	 * @ORM\GeneratedValue(strategy="IDENTITY")
 	 */
-	private $id;
+	private $idUser;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="username", type="string", length=20, nullable=false)
+	 * @ORM\Column(name="user_name", type="string", length=20, nullable=false)
 	 */
 	private $username = '';
 	/**
@@ -61,7 +79,7 @@ class User
 	 *
 	 * @ORM\Column(name="active", type="boolean", nullable=true)
 	 */
-	private $active;
+	private $active = 0;
 	/**
 	 * @var string
 	 *
@@ -79,7 +97,7 @@ class User
 	 *
 	 * @ORM\Column(name="created_at", type="datetime", nullable=false)
 	 */
-	private $createdAt;
+	private $createdAt = 'CURRENT_TIMESTAMP';
 	/**
 	 * @var \DateTime
 	 *
@@ -103,16 +121,6 @@ class User
 	 *
 	 * @ORM\Column(name="token", type="string", length=16, nullable=true)
 	 */
-	private $token;
-	/**
-	 * @var \DateTime
-	 *
-	 * @ORM\Column(name="token_expire", type="datetime", nullable=true)
-	 */
-	private $tokenExpire;
-	/**
-	 * @ORM\OneToMany(targetEntity="Portal", mappedBy="modified_by")
-	 */
 	private $portalsModified;
 	/**
 	 * @ORM\OneToMany(targetEntity="Portal", mappedBy="deactivated_by")
@@ -128,13 +136,48 @@ class User
 	 * @ORM\Column(name="created_by", type="integer", nullable=true)
 	 */
 	private $createdBy;
+    /**
+     * @ORM\OneToMany(targetEntity="UserActivation", mappedBy="user")
+     */
+    private $user_activations;
 
 	public function __construct()
 	{
 		$this->portalsDeactivated = new ArrayCollection();
 		$this->portalsModified = new ArrayCollection();
 		$this->portalsCreated = new ArrayCollection();
+        $this->user_activations = new ArrayCollection();
 	}
+
+    public function getFailedAttemptCount()
+    {
+        return $this->failedAttemptCount;
+    }
+
+    public function setFailedAttemptCount($incFailedAttemptCount)
+    {
+        $this->failedAttemptCount = $incFailedAttemptCount;
+    }
+
+    public function getLockedOut()
+    {
+        return $this->lockedOut;
+    }
+
+    public function setLockedOut($incLockedOut)
+    {
+        $this->lockedOut = $incLockedOut;
+    }
+
+    public function getDeleted()
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted($incDeleted)
+    {
+        $this->deleted = $incDeleted;
+    }
 
 	public function getVersion()
 	{
@@ -173,7 +216,7 @@ class User
 
 	public function GetId()
 	{
-		return $this->id;
+		return $this->idUser;
 	}
 
 	public function setActive($int)
@@ -206,16 +249,6 @@ class User
 		return $this->portalsModified;
 	}
 
-	public function setToken($incToken)
-	{
-		$this->token = $incToken;
-	}
-
-	public function setTokenExpire($incTokenExpire)
-	{
-		$this->tokenExpire = $incTokenExpire;
-	}
-
 	public function setActiveHash($incActiveHash)
 	{
 		$this->activeHash = $incActiveHash;
@@ -235,5 +268,27 @@ class User
 	{
 		$this->createdBy = $incCreatedBy;
 	}
+
+     public function getFullName()
+     {
+        if (!$this->firstName || !$this->lastName) {
+             return null;
+        }
+
+        return "{$this->firstName} {$this->lastName}";
+     }
+
+     public function getFullNameOrUsername()
+     {
+         return $this->getFullName() ?: $this->username;
+     }
+
+    public function setToken($string)
+    {
+    }
+
+    public function setTokenExpire($string)
+    {
+    }
 }
 

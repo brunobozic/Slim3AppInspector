@@ -10,7 +10,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Slim\Container;
 use Tuupola\Middleware\ServerTiming\CallableDelegate;
 
-
 class ApiAuditMiddleware implements MiddlewareInterface
 {
 	private $container;

@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PortalFeature
  *
  * @ORM\Entity
- * @ORM\Table(name="portal_feature", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"}),
+ * @ORM\Table(name="portal_feature", uniqueConstraints={@ORM\UniqueConstraint(name="id_2", columns={"id"}),
  * @ORM\UniqueConstraint(name="portal_feature_name", columns={"portal_feature_name"})},
  * indexes={@ORM\Index(name="idx_portal_feature", columns={"id"})},
  * schema="app_inspector"
@@ -185,7 +185,5 @@ class PortalFeature
 	{
 		$this->version = $incVersion;
 	}
-
-
 }
 

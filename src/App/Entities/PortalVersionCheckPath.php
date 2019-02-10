@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PortalVersionCheckPath
  *
  * @ORM\Entity
- * @ORM\Table(name="portal_version_check_path", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"})},
+ * @ORM\Table(name="portal_version_check_path", uniqueConstraints={@ORM\UniqueConstraint(name="id_8", columns={"id"})},
  * indexes={@ORM\Index(name="idx_portal_version_check_path", columns={"id"})},
  * schema="app_inspector"
  * )

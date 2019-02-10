@@ -1,9 +1,21 @@
 <?php
 
+use App\ServiceProviders\MonologAuditLogServiceProvider;
 use App\ServiceProviders\MonologServiceProvider;
 use App\Token;
 use App\Validators\PortalCreationValidator;
 use Micheh\Cache\CacheUtil;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\BufferHandler;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
+use Monolog\Processor\IntrospectionProcessor;
+use Monolog\Processor\MemoryPeakUsageProcessor;
+use Monolog\Processor\MemoryUsageProcessor;
+use Monolog\Processor\ProcessIdProcessor;
+use Monolog\Processor\PsrLogMessageProcessor;
+use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -12,9 +24,9 @@ use Micheh\Cache\CacheUtil;
 // -----------------------------------------------------------------------------
 
 // Set the project's base
-if ( ! defined('APP_ROOT')) {
+if ( ! defined(APP_ROOT)) {
 	$spl = new SplFileInfo(__DIR__ . '/..');
-	define('APP_ROOT', $spl->getRealPath());
+	define(APP_ROOT, $spl->getRealPath());
 }
 
 // Set the vendor modules
@@ -43,9 +55,9 @@ $container[ "phpErrorHandler" ] = function ($container) {
 	return $container[ "errorHandler" ];
 };
 
-$container[ "notFoundHandler" ] = function ($container) {
-	return new Slim\Handlers\NotFound;
-};
+//$container[ "notFoundHandler" ] = function ($container) {
+	//return new Slim\Handlers\NotFound;
+//};
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -57,7 +69,34 @@ $container[ "notFoundHandler" ] = function ($container) {
 // 			    Monolog Service Provider
 // -------------------------------------------------------
 $container->register(new MonologServiceProvider());
-//$container->register(new WhoopsServiceProvider());
+// $container->register(new MonologAuditLogServiceProvider());
+// $container->register(new WhoopsServiceProvider());
+
+//$container[ 'audit_log' ] = function ($container) {
+//    $settings = $container->get('settings');
+//    $loggerName = $settings->get('audit_log')[ 'name' ];
+//    $loggerPath = $settings->get('audit_log')[ 'audit_path' ];
+//    $audit_log = new Logger($loggerName);
+//    # PSR 3 log message formatting for all handlers
+//    $audit_log->pushProcessor(new PsrLogMessageProcessor());
+//
+//    $filename = sprintf($loggerPath . "%s", $audit_log->getName());
+//    $handler = new RotatingFileHandler($filename, 24, Logger::INFO, true, 0777, true);
+//
+//    $handler->setFilenameFormat('{filename}-{date}.log', 'Y-m-d');
+//
+//    $format = "[%datetime%][%channel%][%level_name%][%extra.file%][%extra.line%][%extra.ip%][M:%message%][ID:%extra.uid%][C:%context%][E:%extra%]\n\n";
+//    $handler->pushProcessor(new UidProcessor(24));
+//    $handler->pushProcessor(new MemoryUsageProcessor());
+//    $handler->pushProcessor(new MemoryPeakUsageProcessor());
+//    $handler->pushProcessor(new ProcessIdProcessor());
+//    $handler->pushProcessor(new WebProcessor());
+//    $handler->pushProcessor(new IntrospectionProcessor());
+//    $handler->setFormatter(new LineFormatter($format, 'H:i:s'));
+//    $audit_log->pushHandler(new BufferHandler($handler));
+//
+//    return $audit_log;
+//};
 
 // -------------------------------------------------------
 // To completely disable Slim’s error handling,
@@ -66,25 +105,6 @@ $container->register(new MonologServiceProvider());
 //unset($app->getContainer()['errorHandler']);
 //unset($app->getContainer()['phpErrorHandler']);
 
-$container[ 'tracer' ] = function ($container) {
-
-	$settings = $container->get('settings');
-	$logger = new \Monolog\Logger($settings[ 'tracer' ][ 'name' ]);
-	$logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-	$logger->pushHandler(new \Monolog\Handler\StreamHandler($settings[ 'tracer' ][ 'tracer_path' ], \Monolog\Logger::DEBUG));
-
-	return $logger;
-};
-
-$container[ 'audit_log' ] = function ($container) {
-
-	$settings = $container->get('settings');
-	$logger = new \Monolog\Logger($settings[ 'audit_log' ][ 'name' ]);
-	$logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-	$logger->pushHandler(new \Monolog\Handler\StreamHandler($settings[ 'audit_log' ][ 'audit_path' ], \Monolog\Logger::DEBUG));
-
-	return $logger;
-};
 
 // -------------------------------------------------------
 // 			    Doctrine Service Provider
@@ -106,20 +126,28 @@ $container[ 'em' ] = function ($container) {
 // 			    Repository Service Provider wire-up
 // -------------------------------------------------------
 $container[ 'portalRepository' ] = function ($container) {
-	return new \App\Repository\PortalRepository($container[ 'logger' ], $container[ 'tracer' ], $container[ 'em' ]);
+	return new \App\Repository\PortalRepository($container[ 'logger' ], $container[ 'em' ]);
 };
 $container[ 'userRepository' ] = function ($container) {
-	return new \App\Repository\UserRepository($container[ 'logger' ], $container[ 'tracer' ], $container[ 'em' ]);
+	return new \App\Repository\UserRepository($container[ 'logger' ], $container[ 'em' ]);
 };
-
+$container[ 'tokenRepository' ] = function ($container) {
+    return new \App\Repository\TokenRepository($container[ 'logger' ], $container[ 'em' ]);
+};
 // -------------------------------------------------------
 // 			    Endpoint Service Provider wire-up
 // -------------------------------------------------------
 $container[ 'App\Endpoints\PortalEndpoint' ] = function ($container) {
-	return new App\Endpoints\PortalEndpoint($container[ 'portalRepository' ], $container[ 'cache' ], $container[ 'portalCreationValidator' ], $container[ 'portalGetValidator' ], $container[ 'token' ], $container[ 'Stopwatch' ]);
+	return new App\Endpoints\PortalEndpoint($container[ 'portalRepository' ], $container[ 'userRepository' ], $container[ 'cache' ], $container[ 'portalCreationValidator' ], $container[ 'portalGetValidator' ], $container[ 'token' ], $container[ 'Stopwatch' ]);
 };
 $container[ 'App\Endpoints\UserEndpoint' ] = function ($container) {
-	return new App\Endpoints\UserEndpoint($container[ 'userRepository' ]);
+	return new App\Endpoints\UserEndpoint($container[ 'portalRepository' ], $container[ 'userRepository' ], $container[ 'cache' ], $container[ 'portalCreationValidator' ], $container[ 'portalGetValidator' ], $container[ 'token' ], $container[ 'Stopwatch' ]);
+};
+$container[ 'App\Endpoints\LoginEndpoint' ] = function ($container) {
+    return new App\Endpoints\LoginEndpoint($container[ 'loginRepository' ], $container[ 'Stopwatch' ]);
+};
+$container[ 'App\Endpoints\TokenEndpoint' ] = function ($container) {
+    return new App\Endpoints\TokenEndpoint($container[ 'portalRepository' ], $container[ 'userRepository' ], $container[ 'cache' ], $container[ 'portalCreationValidator' ], $container[ 'portalGetValidator' ], $container[ 'token' ], $container[ 'Stopwatch' ]);
 };
 
 // -------------------------------------------------------
@@ -127,6 +155,13 @@ $container[ 'App\Endpoints\UserEndpoint' ] = function ($container) {
 // -------------------------------------------------------
 $container[ 'DatabaseSeeder' ] = function ($container) {
 	return new \App\Helpers\DatabaseSeedHelper($container);
+};
+
+// -------------------------------------------------------
+// 			   HashingHelper Service Provider
+// -------------------------------------------------------
+$container[ 'HashingHelper' ] = function ($container) {
+    return new \App\Helpers\HashingHelper($container);
 };
 
 // -------------------------------------------------------
@@ -144,11 +179,12 @@ $container[ "token" ] = function ($container) {
 };
 
 // -------------------------------------------------------
-// 			   Respect validation Service Provider
+// 			   Respect Validation Service Provider
 // -------------------------------------------------------
 $container[ 'portalCreationValidator' ] = function () {
 	return new PortalCreationValidator();
 };
+
 $container[ 'portalGetValidator' ] = function () {
 	return new \App\Validators\PortalGetValidator();
 };

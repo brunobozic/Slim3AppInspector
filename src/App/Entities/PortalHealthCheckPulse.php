@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PortalHealthCheckPulse
  *
  * @ORM\Entity
- * @ORM\Table(name="portal_health_check_pulse", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"})},
+ * @ORM\Table(name="portal_health_check_pulse", uniqueConstraints={@ORM\UniqueConstraint(name="id_4", columns={"id"})},
  * indexes={@ORM\Index(name="idx_portal_health_check_pulse", columns={"id"})},
  * schema="app_inspector"
  * )

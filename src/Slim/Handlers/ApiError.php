@@ -5,12 +5,17 @@ use Crell\ApiProblem\ApiProblem;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
+use Slim\Handlers\Error;
 
-final class ApiError extends \Slim\Handlers\Error
+final class ApiError extends Error
 {
 	protected $logger;
 
-	public function __construct(LoggerInterface $logger)
+    /**
+     * ApiError constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
 	{
 		$this->logger = $logger;
 	}

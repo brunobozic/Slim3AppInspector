@@ -11,10 +11,14 @@ abstract class RepositoryBase
 	protected $tracer;
 	protected $entityManager = null;
 
-	public function __construct(LoggerInterface $logger, LoggerInterface $tracer, EntityManager $em)
+    /**
+     * RepositoryBase constructor.
+     * @param LoggerInterface $logger
+     * @param EntityManager $em
+     */
+    public function __construct(LoggerInterface $logger, EntityManager $em)
 	{
 		$this->logger = $logger;
-		$this->tracer = $tracer;
 		$this->entityManager = $em;
 	}
 }

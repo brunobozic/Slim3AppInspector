@@ -17,20 +17,20 @@ use Monolog\Registry as LoggerRegistry;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 
-class MonologServiceProvider implements ServiceProviderInterface
+class MonologAuditLogServiceProvider implements ServiceProviderInterface
 {
 	public function register(Container $pimple)
 	{
-		$pimple[ 'logger' ] = function ($pimple) {
+		$pimple[ 'audit_log' ] = function ($pimple) {
 
 			$settings = $pimple->get('settings');
-			$loggerName = $settings->get('logger')[ 'log_name' ];
-			$loggerPath = $settings->get('logger')[ 'log_path' ];
-			$logger = new Logger($loggerName);
+			$loggerName = $settings->get('audit_log')[ 'name' ];
+			$loggerPath = $settings->get('audit_log')[ 'audit_path' ];
+            $audit_log = new Logger($loggerName);
 			# PSR 3 log message formatting for all handlers
-			$logger->pushProcessor(new PsrLogMessageProcessor());
+            $audit_log->pushProcessor(new PsrLogMessageProcessor());
 
-			$filename = sprintf($loggerPath . "%s", $logger->getName());
+			$filename = sprintf($loggerPath . "%s", $audit_log->getName());
 			$handler = new RotatingFileHandler($filename, 24, Logger::INFO, true, 0777, true);
 
 			$handler->setFilenameFormat('{filename}-{date}.log', 'Y-m-d');
@@ -43,12 +43,9 @@ class MonologServiceProvider implements ServiceProviderInterface
 			$handler->pushProcessor(new WebProcessor());
 			$handler->pushProcessor(new IntrospectionProcessor());
 			$handler->setFormatter(new LineFormatter($format, 'H:i:s'));
-			$logger->pushHandler(new BufferHandler($handler));
+            $audit_log->pushHandler(new BufferHandler($handler));
 
-			LoggerRegistry::addLogger($logger, $loggerName, true);
-			LoggerErrorHandler::register($logger);
-
-			return $logger;
+			return $audit_log;
 		};
 	}
 }

@@ -1,59 +1,70 @@
 <?php
 namespace App\Repository;
 
+use App\Entities\Token;
 use App\Entities\User;
+use Doctrine\ORM\Repository;
 
-class UserRepository extends RepositoryBase
+class TokenRepository extends RepositoryBase
 {
-	public function getOne($username)
+	public function getOneByUsername($username)
 	{
-		$user = $this->entityManager->getRepository('App\Entities\User')->findOneBy(
-			array('user_name' => $username, 'active' => 1)
-		);
+        $user = $this->entityManager->getRepository('App\Entities\User')->findOneBy(
+            array('user_name' => $username)
+        );
+        if ($user) {
+            $token = $this->entityManager->getRepository('App\Entities\Token')->findOneBy(
+                array('user_id' => $user->id_user)
+            );
+        }
 
-		if ($user) {
-			return $user->getArrayCopy();
-		}
+        if (isset($token)) {
+            if ($token) {
+                return $token->getArrayCopy();
+            }
+        }
 	}
 
 	public function getAll($active)
 	{
-		$users = $this->entityManager->getRepository('App\Entities\User')->findAll(
-		    array('active' => $active)
+        $tokens = $this->entityManager->getRepository('App\Entities\Token')->findAll(
+
         );
 
-		$users = array_map(
-			function ($users) {
-				return $users->getArrayCopy();
+        $tokens = array_map(
+			function ($tokens) {
+				return $tokens->getArrayCopy();
 			},
-			$users
+            $tokens
 		);
 
-		return $users;
+		return $tokens;
 	}
 
-    public function insert($username, $email, $password)
+    public function insert(User $user, $token)
     {
-        $auditUserName = $this->getOne('admin') ;
+        $token = new Token();
+        $token->setToken($token);
+        $token->assignUser($user);
 
-        $user = new User();
-        $user->setActive(1);
-        $user->setEmail($email);
-        $user->setFirstName("");
-        $user->setLastName("");
-        $user->setPassword($password);
-
-        if ($auditUserName) {
-            $user->setUserName($username);
-        }
-
-        $user->setCreatedBy($auditUserName);
-
-        $this->entityManager->persist($user);
+        $this->entityManager->persist($token);
         $this->entityManager->flush();
     }
 
-
+   // public function getFullName()
+    // {
+    //     if (!$this->first_name || !$this->last_name) {
+    //         return null;
+    //     }
+//
+    //      return "{$this->first_name} {$this->last_name}";
+    //  }
+//
+    //  public function getFullNameOrUsername()
+    //    {
+    //        return $this->getFullName() ?: $this->user_name;
+    //    }
+//
     //    public function activateAccount()
     //   {
     //        $this->update([

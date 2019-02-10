@@ -8,8 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * PortalSettingFileContent
  *
  * @ORM\Entity
- * @ORM\Table(name="portal_setting_file_content", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"}),
- * @ORM\UniqueConstraint(name="id", columns={"id"})},
+ * @ORM\Table(name="portal_setting_file_content", uniqueConstraints={@ORM\UniqueConstraint(name="id_6", columns={"id"}),
+ * @ORM\UniqueConstraint(name="id_666", columns={"id"})},
  * indexes={@ORM\Index(name="file_content", columns={"file_content"})},
  * schema="app_inspector"
  * )

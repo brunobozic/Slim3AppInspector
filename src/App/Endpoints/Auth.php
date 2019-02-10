@@ -39,7 +39,7 @@ class Auth
 		]));
 	}
 
-	protected function createToken($request)
+	public static function createToken($request)
 	{
 		$secret_key = getenv('SECRET_KEY');
 		$token = array(

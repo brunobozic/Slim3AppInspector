@@ -14,9 +14,10 @@ class DatabaseSeedHelper extends BaseHelper
 	public function SeedAdminUser()
 	{
 		$user = new User;
+
 		$user->setFirstName('Admin');
 		$user->setLastName('Admin');
-		$user->setActive(1);
+		$user->setActive(true);
 		$user->setEmail('admin@admin.com');
 		$user->setCreatedAt(new DateTime());
 		$user->setPassword('abcdef');
@@ -27,6 +28,7 @@ class DatabaseSeedHelper extends BaseHelper
 		$user->setTokenExpire('kkk');
 
 		$this->container->get('em')->persist($user);
+
 		$this->container->get('em')->flush();
 	}
 
@@ -37,13 +39,15 @@ class DatabaseSeedHelper extends BaseHelper
 			->findOneBy(array('username' => $userName));
 
 		$portal = new Portal();
-		$portal->setActive(1);
+
+		$portal->setActive(true);
 		$portal->setPortalCode('AIJ-Tactel');
 		$portal->setModified();
 		$portal->setModifiedBy($user);
 		$portal->setRootDirectory('/opt2/wisp-aij-tactel/public/');
 
 		$this->container->get('em')->persist($portal);
+
 		$this->container->get('em')->flush();
 	}
 
@@ -54,31 +58,37 @@ class DatabaseSeedHelper extends BaseHelper
 			->findOneBy(array('username' => $userName));
 
 		$portal_generation = new PortalGeneration();
-		$portal_generation->setActive(1);
+
+		$portal_generation->setActive(true);
 		$portal_generation->setGenerationName('Tactel');
 		$portal_generation->setCreated(new DateTime());
 		$portal_generation->setModifiedBy($user);
 
 		$this->container->get('em')->persist($portal_generation);
+
 		$this->container->get('em')->flush();
 	}
 
 	public function SeedPortalFeature()
 	{
 		$userName = 'Admin';
+
 		$user = $this->container->get('em')->getRepository('User')
 			->findOneBy(array('username' => $userName));
 
 		$generationName = 'Tactel';
+
 		$generation = $this->container->get('em')->getRepository('PortalGeneration')
 			->findOneBy(array('generationName' => $generationName));
 
 		$portalName = 'AIJ-Tactel';
+
 		$portal = $this->container->get('em')->getRepository('Portal')
 			->findOneBy(array('generationName' => $portalName));
 
 		$portal_feature = new PortalFeature();
-		$portal_feature->setActive(1);
+
+		$portal_feature->setActive(true);
 		$portal_feature->assignToPortal($portal);
 		$portal_feature->setFeatureName('Crowdin');
 		$portal_feature->setModified();
@@ -100,7 +110,8 @@ class DatabaseSeedHelper extends BaseHelper
 			->findOneBy(array('portalFeatureName' => $portalFeatureName));
 
 		$portal = new PortalHealthCheckURL();
-		$portal->setActive(1);
+
+		$portal->setActive(true);
 		$portal->setModifiedBy($user);
 		$portal->setHealthCheckRootPath('https://inflight.pacwisp.net/wisp-aij-tactel/aij-tactel-crowdin');
 		$portal->assignPortalFeature($portalFeature);
@@ -116,6 +127,7 @@ class DatabaseSeedHelper extends BaseHelper
 			->findOneBy(array('id' => $portalHealthCheckURLID));
 		
 		$healthCheckPulse = new PortalHealthCheckPulse();
+
 		$healthCheckPulse->setCreated(new DateTime());
 		$healthCheckPulse->setHealthcheckResponse('FakeResponse');
 		$healthCheckPulse->setPortalVersion('6.6.6');

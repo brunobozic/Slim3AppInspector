@@ -4,8 +4,9 @@ namespace Slim\Handlers;
 use Crell\ApiProblem\ApiProblem;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\Handlers\Error;
 
-final class NotAllowed extends \Slim\Handlers\Error
+final class NotAllowed extends Error
 {
 	public function __invoke(Request $request, Response $response, $allowed = null)
 	{

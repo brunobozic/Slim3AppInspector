@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * PortalGeneration
  *
  * @ORM\Entity
- * @ORM\Table(name="portal_generation", uniqueConstraints={@ORM\UniqueConstraint(name="id", columns={"id"}),
+ * @ORM\Table(name="portal_generation", uniqueConstraints={@ORM\UniqueConstraint(name="id_3", columns={"id"}),
  * @ORM\UniqueConstraint(name="generation_name", columns={"generation_name"})},
  * indexes={@ORM\Index(name="idx_portal_generation", columns={"id"})},
  * schema="app_inspector"
