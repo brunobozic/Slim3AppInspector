@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Annotations;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -14,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\UniqueConstraint(name="username", columns={"username"})},
  * indexes={@ORM\Index(name="id_2", columns={"id"}),
  * @ORM\Index(name="username_2", columns={"username"})},
- * schema="app_users"
+ * schema="panasonic"
  * )
  */
 class User
@@ -45,7 +46,7 @@ class User
 	/**
 	 * @var integer
 	 *
-	 * @ORM\Column(name="id_user", type="integer", nullable=false)
+	 * @ORM\Column(name="id_user", type="integer", nullable=true)
 	 * @ORM\Id
 	 * @ORM\GeneratedValue(strategy="IDENTITY")
 	 */
@@ -59,13 +60,13 @@ class User
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="first_name", type="string", length=50, nullable=true)
+	 * @ORM\Column(name="first_name", type="string", length=50, nullable=false)
 	 */
 	private $firstName;
 	/**
 	 * @var string
 	 *
-	 * @ORM\Column(name="last_name", type="string", length=50, nullable=true)
+	 * @ORM\Column(name="last_name", type="string", length=50, nullable=false)
 	 */
 	private $lastName;
 	/**
@@ -95,15 +96,15 @@ class User
 	/**
 	 * @var \DateTime
 	 *
-	 * @ORM\Column(name="created_at", type="datetime", nullable=false)
+	 * @ORM\Column(name="created_at", type="datetime", nullable=true)
 	 */
 	private $createdAt = 'CURRENT_TIMESTAMP';
 	/**
 	 * @var \DateTime
 	 *
-	 * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+	 * @ORM\Column(name="modified_at", type="datetime", nullable=true)
 	 */
-	private $updatedAt;
+	private $modifiedAt;
 	/**
 	 * @var integer
 	 *

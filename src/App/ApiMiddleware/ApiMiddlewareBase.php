@@ -2,7 +2,7 @@
 
 namespace App\ApiMiddleware {
 
-	class BaseApiMiddleware
+	class ApiMiddlewareBase
 	{
 		protected $container;
 		protected $app;
